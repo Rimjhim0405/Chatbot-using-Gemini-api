@@ -1,13 +1,13 @@
 from flask import Flask, request, jsonify, render_template
 import google.generativeai as genai
 import os
-import re
+
 
 app = Flask(__name__)
 
-# Configure Gemini (use environment variable)
+
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-1.5-flash") 
 
 @app.route("/")
 def index():
@@ -18,10 +18,12 @@ def chat():
     prompt = request.json.get("message", "")
     try:
         response = model.generate_content(prompt)
-        plain_text = re.sub(r'<.*?>|\*{1,2}([^*]+)\*{1,2}', r'\1', response.text)
-        return jsonify({"response": plain_text})
+        return jsonify({"response": response.text}) # Send the raw Markdown
     except Exception as e:
-        return jsonify({"response": f"Error: {str(e)}"})
+        # It's good practice to log the full error for debugging
+        print(f"Error calling Gemini API: {e}") 
+        # For frontend, return a user-friendly message
+        return jsonify({"response": "An error occurred while getting a response. Please try again."})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000) 
+    app.run(host="0.0.0.0", port=10000)
