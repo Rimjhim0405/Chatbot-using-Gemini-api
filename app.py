@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 # Configure Gemini (use environment variable)
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-1.5-pro-latest")
+model = genai.GenerativeModel("gemini-1.5-flash")
 
 @app.route("/")
 def index():
